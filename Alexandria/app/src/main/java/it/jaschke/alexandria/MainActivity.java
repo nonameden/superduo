@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 break;
 
         }
-
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentManager.beginTransaction()
                 .replace(R.id.container, nextFragment)
                 .addToBackStack((String) title)

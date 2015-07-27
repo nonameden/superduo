@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +22,13 @@ import it.jaschke.alexandria.data.AlexandriaContract;
 
 public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final int LOADER_LIST_BOOKS = 100;
+    private static final String EXTRA_SEARCH_STRING = "extra-search-string";
+
     private BookListAdapter bookListAdapter;
     private ListView bookList;
     private int position = ListView.INVALID_POSITION;
     private EditText searchText;
-
-    private final int LOADER_ID = 10;
 
     public ListOfBooks() {
     }
@@ -35,28 +36,28 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bookListAdapter = new BookListAdapter(getActivity(), null, 0);
+        getLoaderManager().initLoader(LOADER_LIST_BOOKS, null, this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        Cursor cursor = getActivity().getContentResolver().query(
-                AlexandriaContract.BookEntry.CONTENT_URI,
-                null, // leaving "columns" null just returns all the columns.
-                null, // cols for "where" clause
-                null, // values for "where" clause
-                null  // sort order
-        );
-
-
-        bookListAdapter = new BookListAdapter(getActivity(), cursor, 0);
+//
+//        Cursor cursor = getActivity().getContentResolver().query(
+//                AlexandriaContract.BookEntry.CONTENT_URI,
+//                null, // leaving "columns" null just returns all the columns.
+//                null, // cols for "where" clause
+//                null, // values for "where" clause
+//                null  // sort order
+//        );
         View rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
         searchText = (EditText) rootView.findViewById(R.id.searchText);
         rootView.findViewById(R.id.searchButton).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ListOfBooks.this.restartLoader();
+                        filterBooks();
                     }
                 }
         );
@@ -79,26 +80,29 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         return rootView;
     }
 
-    private void restartLoader(){
-        getLoaderManager().restartLoader(LOADER_ID, null, this);
+    private void filterBooks() {
+        Bundle args = new Bundle();
+        args.putString(EXTRA_SEARCH_STRING, searchText.getText().toString());
+        getLoaderManager().restartLoader(LOADER_LIST_BOOKS, args, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        if(args!=null) {
+            final String selection = AlexandriaContract.BookEntry.TITLE + " LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
+            String searchString = args.getString(EXTRA_SEARCH_STRING);
 
-        final String selection = AlexandriaContract.BookEntry.TITLE +" LIKE ? OR " + AlexandriaContract.BookEntry.SUBTITLE + " LIKE ? ";
-        String searchString =searchText.getText().toString();
-
-        if(searchString.length()>0){
-            searchString = "%"+searchString+"%";
-            return new CursorLoader(
-                    getActivity(),
-                    AlexandriaContract.BookEntry.CONTENT_URI,
-                    null,
-                    selection,
-                    new String[]{searchString,searchString},
-                    null
-            );
+            if (!TextUtils.isEmpty(searchString)) {
+                searchString = "%" + searchString + "%";
+                return new CursorLoader(
+                        getActivity(),
+                        AlexandriaContract.BookEntry.CONTENT_URI,
+                        null,
+                        selection,
+                        new String[]{searchString, searchString},
+                        null
+                );
+            }
         }
 
         return new CursorLoader(
