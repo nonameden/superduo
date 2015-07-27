@@ -107,6 +107,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         }
         mShareIntent.setType("text/plain");
         mShareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
+        //Will crash if share provider has not been created so lets check first
         setShareIntent();
 
         String bookSubTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
