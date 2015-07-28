@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:contentDescription="@string/home_team_name"
+                android:textColor="@android:color/black"
                 android:gravity="center"
                 android:text="@string/test_text"
                 android:textSize="@dimen/TeamNames"/>
@@ -50,6 +51,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:contentDescription="@string/score"
+                android:textColor="@android:color/black"
                 android:gravity="center"
                 android:text="@string/test_text"
                 android:textSize="@dimen/Score"/>
@@ -61,6 +63,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:contentDescription="@string/time"
+                android:textColor="@android:color/black"
                 android:gravity="center"
                 android:text="@string/test_text"/>
 
@@ -85,6 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:contentDescription="@string/away_team_name"
+                android:textColor="@android:color/black"
                 android:gravity="center"
                 android:text="@string/test_text"
                 android:textSize="@dimen/TeamNames"/>
@@ -94,7 +98,8 @@
     <FrameLayout
         android:id="@+id/details_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:contentDescription="@null">
     </FrameLayout>
 </LinearLayout>
 
