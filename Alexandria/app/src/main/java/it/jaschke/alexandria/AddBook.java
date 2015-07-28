@@ -3,6 +3,7 @@ package it.jaschke.alexandria;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -76,6 +77,9 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 if(ean.length()==10 && !ean.startsWith("978")){
                     ean="978"+ean;
                 }
+                if(ean.length() < 13) {
+                    return;
+                }
                 //Once we have an ISBN, start a book intent
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(BookService.EAN, ean);
@@ -133,7 +137,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         }
     }
 
-    private void restartLoader(){
+    private void restartLoader() {
+        getLoaderManager().destroyLoader(LOADER_ID);
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
@@ -176,10 +181,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         authorsView.setText(TextUtils.join("\n", authorsArr));
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.bookCover);
         if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-            ImageView imageView = (ImageView) rootView.findViewById(R.id.bookCover);
             Glide.with(this).load(imgUrl).into(imageView);
             rootView.findViewById(R.id.bookCover).setVisibility(View.VISIBLE);
+        } else {
+            imageView.setImageDrawable(new ColorDrawable(0));
         }
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
