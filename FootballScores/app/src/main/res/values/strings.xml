@@ -44,4 +44,15 @@
     <string name="match_semi_final">SemiFinal</string>
     <string name="match_final">Final</string>
     <string name="match_day">Matchday : %d</string>
+    <string name="share_button">Share button</string>
+    <string name="home_crest">Home crest</string>
+    <string name="home_team_name">Home team name</string>
+    <string name="score">Score</string>
+    <string name="time">Time</string>
+    <string name="away_team">Away team crest</string>
+    <string name="away_team_name">Away team name</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="league">League</string>
+    <string name="matchday">Matchday</string>
 </resources>
